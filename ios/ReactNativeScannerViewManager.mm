@@ -1,6 +1,7 @@
 #import <React/RCTViewManager.h>
 #import <React/RCTUIManager.h>
 #import "RCTBridge.h"
+#import <React/RCTLog.h>
 
 @interface ReactNativeScannerViewManager : RCTViewManager
 @end
@@ -9,11 +10,6 @@
 
 RCT_EXPORT_MODULE(ReactNativeScannerView)
 
-- (UIView *)view
-{
-  return [[UIView alloc] init];
-}
-
-RCT_EXPORT_VIEW_PROPERTY(color, NSString)
+RCT_EXPORT_VIEW_PROPERTY(onCodeScanned, RCTDirectEventBlock)
 
 @end
