@@ -1,25 +1,44 @@
-import * as React from 'react';
+import React, {useEffect, useState} from 'react';
+import {Text, SafeAreaView} from 'react-native';
 
-import { StyleSheet, View } from 'react-native';
-import { ReactNativeScannerView } from '@brainylab/react-native-scanner';
+import {useCameraPermission} from '@brainylab/react-native-permissions';
+import {CameraScanner} from '@brainylab/react-native-scanner';
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <ReactNativeScannerView color="#32a852" style={styles.box} />
-    </View>
-  );
-}
+  const [code, setCode] = useState<string | null>(null);
+  const {status, requestPermission} = useCameraPermission();
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20,
-  },
-});
+  useEffect(() => {
+    if (status === 'denied') {
+      requestPermission();
+    }
+  }, [status, requestPermission]);
+
+  if (code) {
+    return (
+      <Text style={{fontSize: 30, color: 'red'}}>Code Scanned is: {code}</Text>
+    );
+  }
+
+  if (status === 'authorized') {
+    return (
+      <SafeAreaView style={{flex: 1}}>
+        <CameraScanner
+          style={{flex: 1}}
+          onCodeScanned={value => {
+            if (value.nativeEvent?.value) {
+              setCode(value.nativeEvent.value);
+            }
+            console.log(value.nativeEvent.value);
+          }}
+        />
+      </SafeAreaView>
+    );
+  } else {
+    return (
+      <Text style={{fontSize: 30, color: 'red'}}>
+        You need to grant camera permission first
+      </Text>
+    );
+  }
+}

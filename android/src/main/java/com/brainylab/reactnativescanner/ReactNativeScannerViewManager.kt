@@ -1,7 +1,8 @@
 package com.brainylab.reactnativescanner
 
-import android.graphics.Color
+import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.module.annotations.ReactModule
+import com.facebook.react.common.MapBuilder
 import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.ViewManagerDelegate
@@ -10,9 +11,22 @@ import com.facebook.react.viewmanagers.ReactNativeScannerViewManagerInterface
 import com.facebook.react.viewmanagers.ReactNativeScannerViewManagerDelegate
 import com.facebook.soloader.SoLoader
 
+
+
 @ReactModule(name = ReactNativeScannerViewManager.NAME)
-class ReactNativeScannerViewManager : SimpleViewManager<ReactNativeScannerView>(),
+class ReactNativeScannerViewManager(private val mCallerContext: ReactApplicationContext): SimpleViewManager<ReactNativeScannerView>(),
   ReactNativeScannerViewManagerInterface<ReactNativeScannerView> {
+
+  companion object {
+    const val NAME = "ReactNativeScannerView"
+
+    init {
+      if (BuildConfig.CODEGEN_MODULE_REGISTRATION != null) {
+        SoLoader.loadLibrary(BuildConfig.CODEGEN_MODULE_REGISTRATION)
+      }
+    }
+  }
+
   private val mDelegate: ViewManagerDelegate<ReactNativeScannerView>
 
   init {
@@ -23,26 +37,21 @@ class ReactNativeScannerViewManager : SimpleViewManager<ReactNativeScannerView>(
     return mDelegate
   }
 
+
   override fun getName(): String {
     return NAME
   }
 
-  public override fun createViewInstance(context: ThemedReactContext): ReactNativeScannerView {
-    return ReactNativeScannerView(context)
+  override fun createViewInstance(reactContext: ThemedReactContext): ReactNativeScannerView {
+    val reactnativeScannerView = ReactNativeScannerView(mCallerContext)
+    reactnativeScannerView.setUpCamera(mCallerContext)
+    return reactnativeScannerView
   }
 
-  @ReactProp(name = "color")
-  override fun setColor(view: ReactNativeScannerView?, color: String?) {
-    view?.setBackgroundColor(Color.parseColor(color))
-  }
-
-  companion object {
-    const val NAME = "ReactNativeScannerView"
-
-    init {
-      if (BuildConfig.CODEGEN_MODULE_REGISTRATION != null) {
-        SoLoader.loadLibrary(BuildConfig.CODEGEN_MODULE_REGISTRATION)
-      }
-    }
+  override fun getExportedCustomDirectEventTypeConstants(): Map<String?, Any> {
+    return MapBuilder.of(
+      "topOnScanner",
+      MapBuilder.of("registrationName", "onCodeScanned")
+    )
   }
 }

@@ -1,8 +1,13 @@
+import type {ViewProps} from 'react-native';
+import type {DirectEventHandler} from 'react-native/Libraries/Types/CodegenTypes';
 import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent';
-import type { ViewProps } from 'react-native';
+
+type Event = {
+  value: string;
+};
 
 interface NativeProps extends ViewProps {
-  color?: string;
+  onCodeScanned: DirectEventHandler<Event>;
 }
 
 export default codegenNativeComponent<NativeProps>('ReactNativeScannerView');
