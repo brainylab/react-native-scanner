@@ -1,6 +1,6 @@
 {
   "name": "@brainylab/react-native-scanner",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "QR Code/Barcode Scanner",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -54,7 +54,8 @@
   },
   "homepage": "https://github.com/brainylab/brainylab-react-native-scanner#readme",
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
   },
   "devDependencies": {
     "@brainylab/eslint-config-react-native": "^0.0.6",
