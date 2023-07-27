@@ -86,6 +86,12 @@ class ReactNativeScannerView(context: Context) :  LinearLayout(context) {
         }
     }
 
+    override fun onDetachedFromWindow() {
+      super.onDetachedFromWindow()
+      mCameraProvider!!.unbindAll();
+      Log.e(TAG, "on detached from windows")
+    }
+
     fun setUpCamera(reactApplicationContext: ReactApplicationContext) {
         if (allPermissionsGranted()) {
             startCamera(reactApplicationContext)
@@ -100,12 +106,12 @@ class ReactNativeScannerView(context: Context) :  LinearLayout(context) {
                 Barcode.FORMAT_CODE_128,
                 Barcode.FORMAT_CODE_39,
                 Barcode.FORMAT_CODE_93,
-                // Barcode.FORMAT_CODABAR,
-                // Barcode.FORMAT_DATA_MATRIX,
+                Barcode.FORMAT_CODABAR,
+                Barcode.FORMAT_DATA_MATRIX,
                 Barcode.FORMAT_EAN_13,
                 Barcode.FORMAT_EAN_8,
-                // Barcode.FORMAT_ITF,
-                // Barcode.FORMAT_PDF417,
+                Barcode.FORMAT_ITF,
+                Barcode.FORMAT_PDF417,
             )
             .build()
         scanner = BarcodeScanning.getClient(options)
