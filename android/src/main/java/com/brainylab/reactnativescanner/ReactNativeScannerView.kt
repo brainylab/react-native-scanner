@@ -85,12 +85,6 @@ class ReactNativeScannerView(context: Context) :  LinearLayout(context) {
         }
     }
 
-    override fun onDetachedFromWindow() {
-      super.onDetachedFromWindow()
-      mCameraProvider!!.unbindAll();
-      Log.e(TAG, "on detached from windows")
-    }
-
     fun setUpCamera(reactApplicationContext: ReactApplicationContext) {
         if (allPermissionsGranted()) {
             startCamera(reactApplicationContext)
