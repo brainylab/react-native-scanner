@@ -29,7 +29,6 @@ import java.util.concurrent.Executors
 import android.util.Log
 
 class ReactNativeScannerView(context: Context) :  LinearLayout(context) {
-
     private var preview: PreviewView
     private var mCameraProvider: ProcessCameraProvider? = null
     private lateinit var cameraExecutor: ExecutorService
