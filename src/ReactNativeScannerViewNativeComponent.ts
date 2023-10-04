@@ -6,8 +6,9 @@ type Event = {
   value: string;
 };
 
-interface NativeProps extends ViewProps {
-  onCodeScanned: DirectEventHandler<Event>;
+export interface NativeProps extends ViewProps {
+  watcher?: boolean;
+  onNativeCodeScanned: DirectEventHandler<Event>;
 }
 
 export default codegenNativeComponent<NativeProps>('ReactNativeScannerView');

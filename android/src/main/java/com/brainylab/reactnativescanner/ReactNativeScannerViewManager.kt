@@ -48,10 +48,15 @@ class ReactNativeScannerViewManager(private val mCallerContext: ReactApplication
     return reactnativeScannerView
   }
 
+  @ReactProp(name = "watcher")
+  override fun setWatcher(view: ReactNativeScannerView, watcher: Boolean) {
+    view.setWatcherMode(watcher)
+  }
+
   override fun getExportedCustomDirectEventTypeConstants(): Map<String?, Any> {
     return MapBuilder.of(
       "topOnScanner",
-      MapBuilder.of("registrationName", "onCodeScanned")
+      MapBuilder.of("registrationName", "onNativeCodeScanned")
     )
   }
 }
