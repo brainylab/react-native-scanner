@@ -22,10 +22,10 @@ export default function App() {
           <CameraScanner
             style={{flex: 1}}
             onCodeScanned={value => {
-              if (value.nativeEvent?.value) {
-                setCode(value.nativeEvent.value);
+              if (value) {
+                setCode(value);
               }
-              console.log(value.nativeEvent.value);
+              console.log(value);
             }}
           />
           <View
