@@ -165,6 +165,8 @@ dependencies {
 
   //MLkit Barcode scanning
   implementation 'com.google.mlkit:barcode-scanning:17.1.0'
+  implementation 'com.google.mlkit:object-detection:17.0.0'
+
 }
 
 if (isNewArchitectureEnabled()) {
