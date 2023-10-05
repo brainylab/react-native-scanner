@@ -35,21 +35,18 @@ RCT_NEW_ARCH_ENABLED=1 bundle exec pod install
 to use this library, you need to configure a library to ask permission to use the camera. take a look at [@brainylab/react-native-permissions](https://github.com/brainylab/react-native-permissions) -> using React Native | New Architecture and TurboModule
 
 ```typescript
-import React, {useEffect, useState} from 'react';
-import {Text, SafeAreaView} from 'react-native';
+import React, {useRef, useState} from 'react';
+import {Text, SafeAreaView, TouchableOpacity, Modal, View} from 'react-native';
 
 import {useCameraPermission} from '@brainylab/react-native-permissions';
 import {CameraScanner} from '@brainylab/react-native-scanner';
 
 export default function App() {
+  const [open, setOpen] = useState(false);
   const [code, setCode] = useState<string | null>(null);
   const {status, requestPermission} = useCameraPermission();
 
-  useEffect(() => {
-    if (status === 'denied') {
-      requestPermission();
-    }
-  }, [status, requestPermission]);
+  const count = useRef(0);
 
   if (code) {
     return (
@@ -60,22 +57,88 @@ export default function App() {
   if (status === 'authorized') {
     return (
       <SafeAreaView style={{flex: 1}}>
-        <CameraScanner
-          style={{flex: 1}}
-          onCodeScanned={value => {
-            if (value.nativeEvent?.value) {
-              setCode(value.nativeEvent.value);
-            }
-            console.log(value.nativeEvent.value);
-          }}
-        />
+        <Modal animationType="none" transparent={true} visible={open}>
+          <CameraScanner
+            watcher={false}
+            style={{flex: 1}}
+            onCodeScanned={value => {
+              if (value) {
+                setCode(value);
+              }
+              count.current++;
+              console.log(value, count.current);
+            }}
+          />
+          <View
+            style={{
+              display: 'flex',
+              margin: 20,
+              justifyContent: 'center',
+              alignContent: 'center',
+              alignItems: 'center',
+            }}>
+            <TouchableOpacity
+              style={{width: '100%', padding: 5, backgroundColor: 'green'}}
+              onPress={() => setOpen(prev => !prev)}>
+              <Text style={{textAlign: 'center', color: 'white'}}>
+                Close Camera
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: 20,
+          }}>
+          <TouchableOpacity
+            style={{
+              width: '100%',
+              backgroundColor: 'green',
+              padding: 5,
+            }}
+            onPress={() => setOpen(prev => !prev)}>
+            <Text style={{color: 'white', textAlign: 'center'}}>
+              Open Camera
+            </Text>
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     );
   } else {
     return (
-      <Text style={{fontSize: 30, color: 'red'}}>
-        You need to grant camera permission first
-      </Text>
+      <>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: 20,
+          }}>
+          <Text
+            style={{
+              textAlign: 'center',
+              fontSize: 20,
+              color: 'red',
+              marginBottom: 50,
+            }}>
+            You need to grant camera permission first
+          </Text>
+          <TouchableOpacity
+            style={{
+              width: '100%',
+              backgroundColor: 'green',
+              padding: 5,
+            }}
+            onPress={requestPermission}>
+            <Text style={{color: 'white', textAlign: 'center'}}>
+              Get Camera Permission
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </>
     );
   }
 }
@@ -85,7 +148,11 @@ export default function App() {
 
 | APIs  | Value  | iOS | Android |
 | -------------- | -------------  | -------------- | --------------- |
+| `watcher` |  activates continuous reading, `default: true` | ❌  | ✅ |
 | `onCodeScanned` |  Receives the value of the QR/BarCode | ✅  | ✅ |
+
+### Watcher Mode
+Observer mode was added with a very specific function, when the mode is `true`, it continuously reads to find a barcode, when it is `false`, it reads once and pauses the reading while the object is in front from the camera, when the object leaves, it releases the reading again. To carry out this method, Google's ML Kit was used.
 
 ### Examples
 
