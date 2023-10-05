@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {Text, SafeAreaView, TouchableOpacity, Modal, View} from 'react-native';
 
 import {useCameraPermission} from '@brainylab/react-native-permissions';
@@ -8,6 +8,8 @@ export default function App() {
   const [open, setOpen] = useState(false);
   const [code, setCode] = useState<string | null>(null);
   const {status, requestPermission} = useCameraPermission();
+
+  const count = useRef(0);
 
   if (code) {
     return (
@@ -20,12 +22,14 @@ export default function App() {
       <SafeAreaView style={{flex: 1}}>
         <Modal animationType="none" transparent={true} visible={open}>
           <CameraScanner
+            watcher={false}
             style={{flex: 1}}
             onCodeScanned={value => {
               if (value) {
                 setCode(value);
               }
-              console.log(value);
+              count.current++;
+              console.log(value, count.current);
             }}
           />
           <View
