@@ -1,6 +1,7 @@
 package com.brainylab.reactnativescanner
 
 import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.common.MapBuilder
 import com.facebook.react.uimanager.SimpleViewManager
@@ -10,8 +11,6 @@ import com.facebook.react.uimanager.annotations.ReactProp
 import com.facebook.react.viewmanagers.ReactNativeScannerViewManagerInterface
 import com.facebook.react.viewmanagers.ReactNativeScannerViewManagerDelegate
 import com.facebook.soloader.SoLoader
-
-
 
 @ReactModule(name = ReactNativeScannerViewManager.NAME)
 class ReactNativeScannerViewManager(private val mCallerContext: ReactApplicationContext): SimpleViewManager<ReactNativeScannerView>(),
@@ -51,6 +50,11 @@ class ReactNativeScannerViewManager(private val mCallerContext: ReactApplication
   @ReactProp(name = "watcher")
   override fun setWatcher(view: ReactNativeScannerView, watcher: Boolean) {
     view.setWatcherMode(watcher)
+  }
+
+  @ReactProp(name = "formats")
+  override fun setFormats(view: ReactNativeScannerView, formats: ReadableArray?) {
+    view.setBarcodeFormats(formats?.toArrayList()?.toArray(arrayOf<String>()) ?: emptyArray())
   }
 
   override fun getExportedCustomDirectEventTypeConstants(): Map<String?, Any> {

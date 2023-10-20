@@ -60,15 +60,55 @@ export default function App() {
   if (status === 'authorized') {
     return (
       <SafeAreaView style={{flex: 1}}>
-        <CameraScanner
-          style={{flex: 1}}
-          onCodeScanned={value => {
-            if (value.nativeEvent?.value) {
-              setCode(value.nativeEvent.value);
-            }
-            console.log(value.nativeEvent.value);
-          }}
-        />
+        <Modal animationType="none" transparent={true} visible={open}>
+          <CameraScanner
+            watcher={false}
+            formats={['code-128', 'code-39', 'code-93', 'ean-13', 'ean-8']}
+            style={{flex: 1}}
+            onCodeScanned={value => {
+              if (value) {
+                setCode(value);
+              }
+              count.current++;
+              console.log(value, count.current);
+            }}
+          />
+          <View
+            style={{
+              display: 'flex',
+              margin: 20,
+              justifyContent: 'center',
+              alignContent: 'center',
+              alignItems: 'center',
+            }}>
+            <TouchableOpacity
+              style={{width: '100%', padding: 5, backgroundColor: 'green'}}
+              onPress={() => setOpen(prev => !prev)}>
+              <Text style={{textAlign: 'center', color: 'white'}}>
+                Close Camera
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: 20,
+          }}>
+          <TouchableOpacity
+            style={{
+              width: '100%',
+              backgroundColor: 'green',
+              padding: 5,
+            }}
+            onPress={() => setOpen(prev => !prev)}>
+            <Text style={{color: 'white', textAlign: 'center'}}>
+              Open Camera
+            </Text>
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     );
   } else {
@@ -85,7 +125,28 @@ export default function App() {
 
 | APIs  | Value  | iOS | Android |
 | -------------- | -------------  | -------------- | --------------- |
+| `formats` |  add specific formats, `required` | ❌  | ✅ |
+| `watcher` |  activates continuous reading, `default: true` | ❌  | ✅ |
 | `onCodeScanned` |  Receives the value of the QR/BarCode | ✅  | ✅ |
+
+<!--  -->
+
+### Formats
+Add specific formats to an array list, reducing the amount of format will help barcode reading performance, compatible formats: `code-128`
+  | `code-39`
+  | `code-93`
+  | `codabar`
+  | `ean-13`
+  | `ean-8`
+  | `itf`
+  | `upc-e`
+  | `qr-code`
+  | `pdf-417`
+  | `aztec`
+  | `data-matrix`
+
+### Watcher Mode
+Observer mode was added with a very specific function, when the mode is `true`, it continuously reads to find a barcode, when it is `false`, it reads once and pauses the reading while the object is in front from the camera, when the object leaves, it releases the reading again. To carry out this method, Google's ML Kit was used.
 
 ### Examples
 
