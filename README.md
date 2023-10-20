@@ -35,21 +35,18 @@ RCT_NEW_ARCH_ENABLED=1 bundle exec pod install
 to use this library, you need to configure a library to ask permission to use the camera. take a look at [@brainylab/react-native-permissions](https://github.com/brainylab/react-native-permissions) -> using React Native | New Architecture and TurboModule
 
 ```typescript
-import React, {useEffect, useState} from 'react';
-import {Text, SafeAreaView} from 'react-native';
+import React, {useRef, useState} from 'react';
+import {Text, SafeAreaView, TouchableOpacity, Modal, View} from 'react-native';
 
 import {useCameraPermission} from '@brainylab/react-native-permissions';
 import {CameraScanner} from '@brainylab/react-native-scanner';
 
 export default function App() {
+  const [open, setOpen] = useState(false);
   const [code, setCode] = useState<string | null>(null);
   const {status, requestPermission} = useCameraPermission();
 
-  useEffect(() => {
-    if (status === 'denied') {
-      requestPermission();
-    }
-  }, [status, requestPermission]);
+  const count = useRef(0);
 
   if (code) {
     return (
@@ -113,9 +110,36 @@ export default function App() {
     );
   } else {
     return (
-      <Text style={{fontSize: 30, color: 'red'}}>
-        You need to grant camera permission first
-      </Text>
+      <>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: 20,
+          }}>
+          <Text
+            style={{
+              textAlign: 'center',
+              fontSize: 20,
+              color: 'red',
+              marginBottom: 50,
+            }}>
+            You need to grant camera permission first
+          </Text>
+          <TouchableOpacity
+            style={{
+              width: '100%',
+              backgroundColor: 'green',
+              padding: 5,
+            }}
+            onPress={requestPermission}>
+            <Text style={{color: 'white', textAlign: 'center'}}>
+              Get Camera Permission
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </>
     );
   }
 }
@@ -128,8 +152,6 @@ export default function App() {
 | `formats` |  add specific formats, `required` | ❌  | ✅ |
 | `watcher` |  activates continuous reading, `default: true` | ❌  | ✅ |
 | `onCodeScanned` |  Receives the value of the QR/BarCode | ✅  | ✅ |
-
-<!--  -->
 
 ### Formats
 Add specific formats to an array list, reducing the amount of format will help barcode reading performance, compatible formats: `code-128`
