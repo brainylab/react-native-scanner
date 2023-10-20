@@ -23,6 +23,7 @@ export default function App() {
         <Modal animationType="none" transparent={true} visible={open}>
           <CameraScanner
             watcher={false}
+            formats={['code-128', 'code-39', 'code-93', 'ean-13', 'ean-8']}
             style={{flex: 1}}
             onCodeScanned={value => {
               if (value) {

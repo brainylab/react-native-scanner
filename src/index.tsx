@@ -3,8 +3,22 @@ import type {NativeSyntheticEvent} from 'react-native';
 
 import NativeCameraScanner from './ReactNativeScannerViewNativeComponent';
 import type {NativeProps} from './ReactNativeScannerViewNativeComponent';
+type BarCodeFormats =
+  | 'code-128'
+  | 'code-39'
+  | 'code-93'
+  | 'codabar'
+  | 'ean-13'
+  | 'ean-8'
+  | 'itf'
+  | 'upc-e'
+  | 'qr-code'
+  | 'pdf-417'
+  | 'aztec'
+  | 'data-matrix';
 
 type Props = Omit<NativeProps, 'onNativeCodeScanned'> & {
+  formats: BarCodeFormats[];
   onCodeScanned?: (code: string) => void;
 };
 

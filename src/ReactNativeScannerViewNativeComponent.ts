@@ -8,6 +8,7 @@ type Event = {
 
 export interface NativeProps extends ViewProps {
   watcher?: boolean;
+  formats: Array<string>;
   onNativeCodeScanned: DirectEventHandler<Event>;
 }
 

@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat
 
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContext
+import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.uimanager.UIManagerHelper
 import com.facebook.react.uimanager.events.EventDispatcher
 
@@ -101,39 +102,34 @@ class ReactNativeScannerView(context: Context) :  LinearLayout(context) {
         }
     }
 
-    fun setUpCamera(reactApplicationContext: ReactApplicationContext) {
-        if (allPermissionsGranted()) {
-            startCamera(reactApplicationContext)
-        }
 
-        cameraExecutor = Executors.newSingleThreadExecutor()
+    fun getBarcodeFormat(codeType: String): Int {
+      return when (codeType) {
+          "code-128" -> Barcode.FORMAT_CODE_128
+          "code-39" -> Barcode.FORMAT_CODE_39
+          "code-93" -> Barcode.FORMAT_CODE_93
+          "codabar" -> Barcode.FORMAT_CODABAR
+          "ean-13" -> Barcode.FORMAT_EAN_13
+          "ean-8" -> Barcode.FORMAT_EAN_8
+          "itf" -> Barcode.FORMAT_ITF
+          "upc-e" -> Barcode.FORMAT_UPC_E
+          "qr-code" -> Barcode.FORMAT_QR_CODE
+          "pdf-417" -> Barcode.FORMAT_PDF417
+          "aztec" -> Barcode.FORMAT_AZTEC
+          "data-matrix" -> Barcode.FORMAT_DATA_MATRIX
+          else -> throw IllegalArgumentException("Invalid code type: $codeType")
+      }
+    }
 
-        scanner = BarcodeScanning.getClient(
-          BarcodeScannerOptions.Builder()
-            .setBarcodeFormats(
-                Barcode.FORMAT_QR_CODE,
-                Barcode.FORMAT_AZTEC,
-                Barcode.FORMAT_CODE_128,
-                Barcode.FORMAT_CODE_39,
-                Barcode.FORMAT_CODE_93,
-                Barcode.FORMAT_CODABAR,
-                Barcode.FORMAT_DATA_MATRIX,
-                Barcode.FORMAT_EAN_13,
-                Barcode.FORMAT_EAN_8,
-                Barcode.FORMAT_ITF,
-                Barcode.FORMAT_PDF417,
-            )
-            .build()
-        )
+    fun setBarcodeFormats(formats: Array<String>) {
+      val codeTypes = formats.toList()
+      val barcodeFormats = codeTypes.map { getBarcodeFormat(it) }
 
-        detector = ObjectDetection.getClient(
-          ObjectDetectorOptions.Builder()
-          .setDetectorMode(ObjectDetectorOptions.SINGLE_IMAGE_MODE)
-          .enableClassification() //optional
-          .build()
-        )
+      setUpBarcodeScanning(barcodeFormats)
+    }
 
-        analysisUseCase.setAnalyzer(
+    fun setUpImageAnalyser() {
+      analysisUseCase.setAnalyzer(
             // newSingleThreadExecutor() will let us perform analysis on a single worker thread
             Executors.newSingleThreadExecutor()
         ) { imageProxy ->
@@ -141,7 +137,33 @@ class ReactNativeScannerView(context: Context) :  LinearLayout(context) {
                 processImageObjectDetectorProxy(detector, imageProxy)
               }
               processImageBarCodeProxy(scanner, imageProxy)
+      }
+    }
+
+    fun setUpBarcodeScanning(barcodeFormats: List<Int>) {
+        val format = barcodeFormats.first()
+
+        scanner = BarcodeScanning.getClient(
+          BarcodeScannerOptions.Builder()
+            .setBarcodeFormats(format, *barcodeFormats.toIntArray())
+            .build()
+        )
+
+        detector = ObjectDetection.getClient(
+          ObjectDetectorOptions.Builder()
+          .setDetectorMode(ObjectDetectorOptions.SINGLE_IMAGE_MODE)
+          .build()
+        )
+
+        setUpImageAnalyser()
+    }
+
+    fun setUpCamera(reactApplicationContext: ReactApplicationContext) {
+        if (allPermissionsGranted()) {
+            startCamera(reactApplicationContext)
         }
+
+        cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
     @SuppressLint("UnsafeOptInUsageError")
