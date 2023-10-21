@@ -52,6 +52,11 @@ class ReactNativeScannerViewManager(private val mCallerContext: ReactApplication
     view.setWatcherMode(watcher)
   }
 
+  @ReactProp(name = "onlyCenter")
+  override fun setOnlyCenter(view: ReactNativeScannerView, onlyCenter: Boolean) {
+    view.setOnlyCenterMode(onlyCenter)
+  }
+
   @ReactProp(name = "formats")
   override fun setFormats(view: ReactNativeScannerView, formats: ReadableArray?) {
     view.setBarcodeFormats(formats?.toArrayList()?.toArray(arrayOf<String>()) ?: emptyArray())
