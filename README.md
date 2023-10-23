@@ -150,6 +150,7 @@ export default function App() {
 | APIs  | Value  | iOS | Android |
 | -------------- | -------------  | -------------- | --------------- |
 | `formats` |  add specific formats, `required` | ❌  | ✅ |
+| `onlyCenter` |  activates only center scanner, `default: false` | ❌  | ✅ |
 | `watcher` |  activates continuous reading, `default: true` | ❌  | ✅ |
 | `onCodeScanned` |  Receives the value of the QR/BarCode | ✅  | ✅ |
 
@@ -166,6 +167,9 @@ Add specific formats to an array list, reducing the amount of format will help b
   | `pdf-417`
   | `aztec`
   | `data-matrix`
+
+### Only Center Mode
+If you activate this mode, the scanner reading will be limited to the center of the camera. default: `true`
 
 ### Watcher Mode
 Observer mode was added with a very specific function, when the mode is `true`, it continuously reads to find a barcode, when it is `false`, it reads once and pauses the reading while the object is in front from the camera, when the object leaves, it releases the reading again. To carry out this method, Google's ML Kit was used.

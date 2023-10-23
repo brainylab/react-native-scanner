@@ -24,6 +24,7 @@ export default function App() {
           <CameraScanner
             watcher={false}
             formats={['code-128', 'code-39', 'code-93', 'ean-13', 'ean-8']}
+            onlyCenter={false}
             style={{flex: 1}}
             onCodeScanned={value => {
               if (value) {
