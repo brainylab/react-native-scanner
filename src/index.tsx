@@ -3,7 +3,7 @@ import type {NativeSyntheticEvent} from 'react-native';
 
 import NativeCameraScanner from './ReactNativeScannerViewNativeComponent';
 import type {NativeProps} from './ReactNativeScannerViewNativeComponent';
-type BarCodeFormats =
+export type BarCodeFormats =
   | 'all_formats'
   | 'code-128'
   | 'code-39'
