@@ -9,7 +9,7 @@ type Event = {
 export interface NativeProps extends ViewProps {
   watcher?: boolean;
   onlyCenter?: boolean;
-  formats: Array<string>;
+  formats?: Array<string>;
   onNativeCodeScanned: DirectEventHandler<Event>;
 }
 

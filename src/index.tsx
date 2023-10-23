@@ -19,7 +19,7 @@ type BarCodeFormats =
   | 'data-matrix';
 
 type Props = Omit<NativeProps, 'onNativeCodeScanned'> & {
-  formats: BarCodeFormats[];
+  formats?: BarCodeFormats[];
   onCodeScanned?: (code: string) => void;
 };
 
