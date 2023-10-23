@@ -4,6 +4,7 @@ import type {NativeSyntheticEvent} from 'react-native';
 import NativeCameraScanner from './ReactNativeScannerViewNativeComponent';
 import type {NativeProps} from './ReactNativeScannerViewNativeComponent';
 type BarCodeFormats =
+  | 'all_formats'
   | 'code-128'
   | 'code-39'
   | 'code-93'
@@ -28,6 +29,8 @@ type Event = {
 
 export const CameraScanner = ({
   watcher = true,
+  onlyCenter = false,
+  formats = ['all_formats'],
   onCodeScanned,
   ...props
 }: Props) => {
@@ -43,7 +46,9 @@ export const CameraScanner = ({
 
   return (
     <NativeCameraScanner
+      formats={formats}
       watcher={watcher}
+      onlyCenter={onlyCenter}
       onNativeCodeScanned={onNativeCodeScanned}
       {...props}
     />
